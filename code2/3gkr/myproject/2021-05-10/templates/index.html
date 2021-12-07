@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>HOME NETWORK</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>HOME IoT</h2>
+        </div>
+        <div class="main">
+            <div>
+                <button onclick="led_on()">LED ON</button>
+            </div>
+            <div>
+                <button onclick="led_off()">LED OFF</button>
+            </div>
+        </div>
+        <div class="main">
+            <div>
+                <button onclick="ultrasonic()">CHECK ULTRA</button>
+            </div>
+        </div>
+        
+        <!-- web input -->
+        <form action="/post" method="post">
+            <p>테스트 : <input type="text" name="test"></p>
+            <input type="submit" value="넘기기">
+        </form>
+        
+        <div id="result">
+            <h1>LED is stopping</h1>
+        </div>
+        <div id="ultra_result">
+            
+        </div>
+    </div>
+    <script>
+        window.onload = ultrasonic()
+        
+        function autoReload() {
+        setTimeout(function() {
+            fetch("/ultra/read")
+            .then(response=> response.text())
+            .then(data=> {
+            console.log(data);
+            let result = document.querySelector("#result");
+            ultra_result.innerHTML = "<h2>distance = "+data+"</h2>";
+            });
+            
+        autoReload();  // calling again after 5 seconds
+         }, 1000);
+        }
+
+        autoReload(); // calling the function for the first time
+        
+        function led_on(){
+            fetch("/led?state=on")
+            .then(response=> { console.log(response); return response.text()})
+            .then(data=> {
+                console.log(data);
+                let result = document.querySelector("#result");
+                if(data=="ok"){
+                    result.innerHTML = "<h1>LED is runinng</h1>";
+                }else{
+                    result.innerHTML = "<h1>error</h1>";
+                }
+            });
+        }
+        function led_off(){
+            fetch("/led?state=off")
+            .then(response=> response.text())
+            .then(data=> {
+                console.log(data);
+                let result = document.querySelector("#result");
+                if(data=="ok"){  
+                    result.innerHTML = "<h1>LED is stopping</h1>";
+                }else{
+                    result.innerHTML = "<h1>error</h1>";
+                }
+            });
+        }
+        function ultrasonic(){
+            fetch("/ultra/read")
+            .then(response=> response.text())
+            .then(data=> {
+                console.log(data);
+                let result = document.querySelector("#result");
+                ultra_result.innerHTML = "<h2>distance = "+data+"</h2>";
+            });
+        }
+    </script>
+</body>
+</html>

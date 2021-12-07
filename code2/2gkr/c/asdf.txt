@@ -1,0 +1,58 @@
+//#include <stdio.h>
+//#define MAXLINE 80
+//
+//int main(int argc, char *argv[])
+//{
+//	FILE *fp[6];
+//	char buffer[MAXLINE];
+//
+//	for(int i = 0; i < 5; i++) fp[i] = fopen(argv[i+1], "r");
+//
+//	fp[5] = fopen(argv[6], "w");
+//	int c;
+//	for(int i = 0; i < 5; i++)
+//	{
+//		while(c = fgets(buffer, MAXLINE, fp[i]) != NULL)
+//		{
+//			fputs(buffer, fp[5]);
+//		}
+//		fclose(fp[i]);
+//	}
+//
+//	(fp[5]);
+//    return 0;
+//}
+
+
+#include <stdio.h>
+#include <string.h>
+
+int main(int argc, char *argv[])
+{
+	FILE *fp1, *fp2;
+	int index = 0;
+
+	fp1 = fopen(argv[1], "r");
+
+	while(!eof(fp1))
+	{
+		char basename[30] = "tes";
+		char number[3];
+
+		sprintf(number, %d, index++);
+		char *filename = strcat(basename, number);
+		char buffer[80];
+		if(fgets(buffer, 80, fp1) == NULL) break;
+
+		fp2 = fopen(filename, "w");
+		fputs(buffer, fp2);
+		for(int i = 0; i < 9; i++)
+		{
+			if(fgets(buffer, 80, fp1) == NULL) break;
+			fputs(buffer, fp2);
+		}
+		fclose(fp2);
+	}
+	fclose(fp1);
+    return 0;
+}

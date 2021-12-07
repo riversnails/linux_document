@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>HOME NETWORK</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>HOME IoT</h2>
+        </div>
+        <div class="main">
+            <div>
+                <button onclick="led_control('on','R')">R on</button>
+            </div>
+            <div>
+                <button onclick="led_control('on','G')">G on</button>
+            </div>
+            <div>
+                <button onclick="led_control('on','B')">B on</button>
+            </div>
+        </div>
+        
+        <div class="main">
+            <div>
+                <button onclick="led_control('off','R')">R off</button>
+            </div>
+            <div>
+                <button onclick="led_control('off','G')">G off</button>
+            </div>
+            <div>
+                <button onclick="led_control('off','B')">B off</button>
+            </div>
+        </div>
+        
+        <div class="main">
+            <div>
+                <button onclick="led_on()">LED ON</button>
+            </div>
+            <div>
+                <button onclick="led_off()">LED OFF</button>
+            </div>
+            <div>
+                <button onclick="ultrasonic()">CHECK ULTRA</button>
+            </div>
+        </div>
+        
+        <div class="main">
+            <div>
+                <button onclick="sensor_on()">SHOW</button>
+            </div>
+            <div>
+                <button onclick="sensor_off()">HIDE</button>
+            </div>
+        </div>
+        
+        <!-- web input -->
+        <form action="/post" method="post">
+            <p>테스트 : <input type="text" name="test"></p>
+            <input type="submit" value="넘기기">
+        </form>
+        
+        <div id="result">
+            <h1>LED is stopping</h1>
+        </div>
+        <div id="ultra_result">
+            
+        </div>
+        <div id="sensor_result">
+            
+        </div>
+        
+    </div>
+    <script>
+        window.onload = ultrasonic()
+        
+        function autoReload_ultra() {
+        setTimeout(function() {
+            fetch("/ultra/read")
+            .then(response=> response.text())
+            .then(data=> {
+            console.log(data);
+            let result = document.querySelector("#result");
+            ultra_result.innerHTML = "<h2>distance = "+data+"</h2>";
+            });
+            
+        autoReload_ultra();
+         }, 1000);
+        }
+        
+        function autoReload_sensor() {
+        setTimeout(function() {
+            fetch("/sensor/on")
+            .then(response=> response.text())
+            .then(data=> {
+                console.log(data);
+                let result = document.querySelector("#result");
+                sensor_result.innerHTML = "<h2>"+data+"</h2>";
+            });
+            
+        autoReload_sensor();
+         }, 1000);
+        }
+        
+        autoReload_ultra();
+        autoReload_sensor();
+        
+        function led_control(state, led)
+        {
+            fetch("/led?state="+state+"&led="+led)
+            .then(response=> { console.log(response); return response.text()})
+            .then(data=> {
+                console.log(data);
+                let result = document.querySelector("#result");
+                if(data=="ok"){
+                    result.innerHTML = "<h1>LED is runinng</h1>";
+                }else{
+                    result.innerHTML = "<h1>error</h1>";
+                }
+            });
+        }
+        
+        function led_on(){
+            fetch("/led?state=on&led=RGB")
+            .then(response=> { console.log(response); return response.text()})
+            .then(data=> {
+                console.log(data);
+                let result = document.querySelector("#result");
+                if(data=="ok"){
+                    result.innerHTML = "<h1>LED is runinng</h1>";
+                }else{
+                    result.innerHTML = "<h1>error</h1>";
+                }
+            });
+        }
+        
+        function led_off(){
+            fetch("/led?state=off&led=RGB")
+            .then(response=> response.text())
+            .then(data=> {
+                console.log(data);
+                let result = document.querySelector("#result");
+                if(data=="ok"){  
+                    result.innerHTML = "<h1>LED is stopping</h1>";
+                }else{
+                    result.innerHTML = "<h1>error</h1>";
+                }
+            });
+        }
+        
+        function ultrasonic(){
+            fetch("/ultra/read")
+            .then(response=> response.text())
+            .then(data=> {
+                console.log(data);
+                let result = document.querySelector("#result");
+                ultra_result.innerHTML = "<h2>distance = "+data+"</h2>";
+            });
+        }
+        
+        function sensor_on(){
+            fetch("/sensor/on")
+            .then(response=> response.text())
+            .then(data=> {
+                console.log(data);
+                let result = document.querySelector("#result");
+                sensor_result.innerHTML = "<h2>"+data+"</h2>";
+            });
+        }
+        
+        function sensor_off(){
+            fetch("/sensor/off")
+            .then(response=> response.text())
+            .then(data=> {
+                console.log(data);
+                let result = document.querySelector("#result");
+                sensor_result.innerHTML = "<h2></h2>";
+            });
+        }
+    </script>
+</body>
+</html>

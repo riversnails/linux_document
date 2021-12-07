@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta HTTP-EQUIV="Pragma" CONTENT="no-cache">
+    <meta HTTP-EQUIV="Expires" CONTENT="-1">
+    
+    <title>HOME NETWORK</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>HOME IoT</h2>
+        </div>
+        
+        <div class="main">
+            <div>
+                <button onclick="camera_on()">CAMERA TAKE</button>
+            </div>
+        </div>
+        
+        <div class="main">
+            <div id="result">
+                
+            </div>
+        </div>
+        
+    </div>
+    <script>
+        
+        /*
+        function autoReload_camera() {
+        setTimeout(function() {
+            fetch("/camera/on")
+            .then(response=> response.text())
+            .then(data=> {
+                console.log(data);
+                let result = document.querySelector("#result");
+                if(data=="ok"){
+                    result.innerHTML = `<img src='static/picture/test.jpg?ref=${Math.random()}' alt'flower'>`;
+                }
+                else{
+                    result.innerHTML = "<h1>no Image</h1>";
+                }
+            });
+            
+        autoReload_camera();
+         }, 100);
+        }
+        
+        autoReload_camera();
+        
+        */
+        
+        function camera_on(){
+            fetch("/camera/on")
+            .then(response=> response.text())
+            .then(data=> {
+                console.log(data);
+                let result = document.querySelector("#result");
+                if(data=="ok"){
+                    result.innerHTML = `<img src='static/picture/test.jpg?ref=${Math.random()}' alt'flower'>`;
+                }
+                else{
+                    result.innerHTML = "<h1>no Image</h1>";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
